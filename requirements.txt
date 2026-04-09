@@ -36,7 +36,7 @@ pydantic==2.7.1
 pydantic-settings==2.2.1
 
 # Testing
-pytest==8.2.0
+pytest==9.0.3
 pytest-asyncio==0.23.6
 
 # Visualization (notebooks)
