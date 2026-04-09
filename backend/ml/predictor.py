@@ -23,13 +23,12 @@ _tfidf = None
 _bow = None
 _svm = None
 _nb = None
-_lstm = None
-_lstm_tokenizer = None
+_lstm_wrapper = None   # _LSTMClassifier instance (PyTorch)
 _meta = None
 
 
 def _load_all():
-    global _tfidf, _bow, _svm, _nb, _lstm, _lstm_tokenizer, _meta
+    global _tfidf, _bow, _svm, _nb, _lstm_wrapper, _meta
 
     _meta = joblib.load(os.path.join(MODELS_DIR, "training_meta.joblib"))
 
@@ -44,15 +43,10 @@ def _load_all():
     if os.path.exists(nb_path):
         _nb = joblib.load(nb_path)
 
-    lstm_path = os.path.join(MODELS_DIR, "lstm_model.keras")
-    tok_path = os.path.join(MODELS_DIR, "lstm_tokenizer.joblib")
-    if os.path.exists(lstm_path) and os.path.exists(tok_path):
-        try:
-            import tensorflow as tf
-            _lstm = tf.keras.models.load_model(lstm_path)
-            _lstm_tokenizer = joblib.load(tok_path)
-        except ImportError:
-            pass
+    # PyTorch LSTM wrapper (saved by train.py)
+    wrapper_path = os.path.join(MODELS_DIR, "lstm_wrapper.joblib")
+    if os.path.exists(wrapper_path):
+        _lstm_wrapper = joblib.load(wrapper_path)
 
 
 def _ensure_loaded():
@@ -91,11 +85,8 @@ def classify(text: str) -> dict:
         confidence = float(proba[1])  # probability of spam class
         label = "spam" if pred == 1 else "ham"
 
-    elif best_name == "LSTM" and _lstm is not None:
-        from tensorflow.keras.preprocessing.sequence import pad_sequences
-        seq = _lstm_tokenizer.texts_to_sequences([text])  # raw text for LSTM
-        padded = pad_sequences(seq, maxlen=150, padding="post", truncating="post")
-        confidence = float(_lstm.predict(padded, verbose=0)[0][0])
+    elif best_name == "LSTM" and _lstm_wrapper is not None:
+        confidence = float(_lstm_wrapper.predict_proba([text])[0])
         pred = 1 if confidence >= 0.5 else 0
         label = "spam" if pred == 1 else "ham"
 

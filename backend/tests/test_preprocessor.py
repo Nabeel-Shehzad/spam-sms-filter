@@ -25,7 +25,7 @@ class TestAdversarialNormalization:
         assert "cash" in result
 
     def test_exclamation_to_i(self):
-        # "w!n" → "win"
+        # "w!n" -> "win"
         result = preprocess("w!n a prize", stem=False, remove_stops=False)
         assert "win" in result
 
@@ -77,7 +77,7 @@ class TestStopWordRemoval:
 class TestStemming:
     def test_stemming_applied(self):
         result = preprocess("running wins prizes", stem=True, remove_stops=False)
-        # PorterStemmer: running→run, wins→win, prizes→prize
+        # PorterStemmer: running->run, wins->win, prizes->prize
         assert "run" in result
         assert "win" in result
 

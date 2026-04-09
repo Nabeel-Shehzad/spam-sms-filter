@@ -76,12 +76,12 @@ def fit_and_save_vectorizers(train_texts: list[str]) -> tuple:
     tfidf = build_tfidf_vectorizer()
     tfidf.fit(train_texts)
     joblib.dump(tfidf, TFIDF_PATH)
-    print(f"TF-IDF vectorizer saved → {TFIDF_PATH}")
+    print(f"TF-IDF vectorizer saved -> {TFIDF_PATH}")
 
     bow = build_bow_vectorizer()
     bow.fit(train_texts)
     joblib.dump(bow, BOW_PATH)
-    print(f"BoW vectorizer saved    → {BOW_PATH}")
+    print(f"BoW vectorizer saved    -> {BOW_PATH}")
 
     return tfidf, bow
 
