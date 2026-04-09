@@ -1,23 +1,6 @@
 # Spam SMS Filtering System
 
-> **Senior Design Project** — Prince Mohammad Bin Fahd University (PMU)  
-> College of Computer Engineering and Science (CCES)  
-> Spring Semester, 2025
-
 An intelligent, real-time SMS spam detection system powered by Machine Learning and Natural Language Processing. The system classifies SMS messages as **spam** or **ham (legitimate)** with high accuracy, supports multilingual detection, and adapts to evolving spam patterns through continuous learning.
-
----
-
-## Team
-
-| Name | Student ID | Major |
-|---|---|---|
-| Roba Alfuraih | 202100243 | Information Technology |
-| Retag Alresheedi | 202002381 | Information Technology |
-| Sara Alabbad | 202101076 | Information Technology |
-| Lujain Almehthel | 202003135 | Information Technology |
-
-**Advisor:** Dr. Nazeeruddin Mohammad
 
 ---
 
@@ -129,7 +112,7 @@ spam-filter/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/spam-sms-filter.git
+git clone https://github.com/Nabeel-Shehzad/spam-sms-filter.git
 cd spam-sms-filter
 ```
 
@@ -187,19 +170,19 @@ API docs available at: `http://localhost:8000/docs`
 1. Unicode normalization
 2. Lowercase
 3. URL & phone number removal
-4. **Adversarial character normalization** (`M0ney` → `money`, `fr.ee` → `free`)
+4. **Adversarial character normalization** (`M0ney` -> `money`, `fr.ee` -> `free`)
 5. Special character removal
 6. Tokenization
 7. Stop word removal
 8. Porter stemming
 
-### Models & Performance (expected on UCI dataset)
+### Models & Performance
 
-| Model | Vectorizer | Expected Accuracy | Expected F1 |
+| Model | Vectorizer | Accuracy | F1 Score |
 |---|---|---|---|
-| Naive Bayes | Bag of Words | ~97% | ~0.94 |
-| SVM | TF-IDF (1,2)-gram | ~98.5% | ~0.97 |
-| Bidirectional LSTM | Word Embeddings | ~99%+ | ~0.98+ |
+| Naive Bayes | Bag of Words | 97.68% | 0.9084 |
+| **SVM** | **TF-IDF (1,2)-gram** | **98.07%** | **0.9213** |
+| Bidirectional LSTM | Word Embeddings | 97.10% | 0.8819 |
 
 ### Running Tests
 
@@ -211,9 +194,9 @@ pytest backend/tests/ -v
 
 ## Dataset
 
-**UCI SMS Spam Collection**  
+**UCI SMS Spam Collection**
 - 5,574 SMS messages (4,827 ham + 747 spam)
-- Source: UCI Machine Learning Repository (Almeida et al., 2016)
+- Source: UCI Machine Learning Repository
 - Automatically downloaded by `data/download_dataset.py`
 
 ---
@@ -242,15 +225,6 @@ pytest backend/tests/ -v
 
 ---
 
-## References
-
-- Almeida, T. A., et al. (2016). UCI SMS Spam Collection Dataset.
-- Dey, S., et al. (2020). Deep learning techniques for spam SMS detection. *Applied Soft Computing*.
-- Uysal, A. K., & Gunal, S. (2019). Feature extraction and selection on SMS spam filtering. *Expert Systems with Applications*.
-- Shen, L., et al. (2021). Handling concept drift in SMS spam filtering. *Pattern Recognition Letters*.
-
----
-
 ## License
 
-This project is developed for academic purposes at Prince Mohammad Bin Fahd University.
+MIT License
