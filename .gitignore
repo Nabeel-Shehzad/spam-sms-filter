@@ -1,0 +1,59 @@
+# ── Claude internal files ──────────────────────────────────────────────────────
+.claude/
+
+# ── Virtual environment ────────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+
+# ── Python cache ───────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ── Environment / secrets ──────────────────────────────────────────────────────
+.env
+*.env
+!.env.example
+
+# ── Trained models & large files ──────────────────────────────────────────────
+models/*.joblib
+models/*.keras
+models/*.h5
+models/*.pkl
+models/training_summary.csv
+models/training_meta.joblib
+
+# ── Dataset (large raw files) ─────────────────────────────────────────────────
+data/raw/
+data/processed/
+
+# ── Jupyter notebooks checkpoints ─────────────────────────────────────────────
+notebooks/.ipynb_checkpoints/
+.ipynb_checkpoints/
+
+# ── IDE / OS ───────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Test / coverage artifacts ─────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/
