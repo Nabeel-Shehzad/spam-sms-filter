@@ -13,7 +13,7 @@ import numpy as np
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 sys.path.insert(0, PROJECT_ROOT)
 
-from backend.nlp.preprocessor import preprocess
+from backend.nlp.preprocessor import preprocess_auto
 from backend.nlp.feature_extractor import load_tfidf_vectorizer, load_bow_vectorizer
 
 MODELS_DIR = os.path.join(PROJECT_ROOT, "models")
@@ -67,7 +67,7 @@ def classify(text: str) -> dict:
     """
     _ensure_loaded()
 
-    cleaned = preprocess(text)
+    cleaned = preprocess_auto(text)
     best_name = _meta["best_model_name"]
 
     if best_name == "SVM" and _svm is not None:
