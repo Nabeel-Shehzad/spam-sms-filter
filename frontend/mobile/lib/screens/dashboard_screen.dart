@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
+import 'package:telephony/telephony.dart';
 import '../services/api_service.dart';
+import '../services/sms_service.dart';
 import '../providers/auth_provider.dart';
 import 'classify_screen.dart';
 import 'history_screen.dart';
+import 'inbox_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -15,12 +18,55 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int _navIndex = 0;
+  // Tracks newly arrived real-time messages for the badge
+  int _newSmsCount = 0;
 
   final List<Widget> _pages = const [
     _HomeTab(),
+    InboxScreen(),
     ClassifyScreen(),
     HistoryScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _startRealTimeListener();
+  }
+
+  void _startRealTimeListener() {
+    SmsService.startListening(
+      onMessage: (SmsMessage msg, String label, double confidence) {
+        if (!mounted) return;
+        setState(() => _newSmsCount++);
+        final isSpam = label == 'spam';
+        final pct = (confidence * 100).toStringAsFixed(0);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(children: [
+              Icon(
+                isSpam ? Icons.warning_amber_rounded : Icons.check_circle_outline,
+                color: isSpam ? const Color(0xFFDA3633) : const Color(0xFF238636),
+                size: 20,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  isSpam
+                      ? '⚠️ Spam from ${msg.address ?? "?"} ($pct%)'
+                      : '✓ Legit SMS from ${msg.address ?? "?"}',
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ]),
+            backgroundColor: const Color(0xFF161B22),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,15 +75,43 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: IndexedStack(index: _navIndex, children: _pages),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _navIndex,
-        onTap: (i) => setState(() => _navIndex = i),
+        onTap: (i) {
+          if (i == 1) setState(() => _newSmsCount = 0); // clear badge on Inbox tap
+          setState(() => _navIndex = i);
+        },
         backgroundColor: const Color(0xFF161B22),
         selectedItemColor: const Color(0xFF58A6FF),
         unselectedItemColor: Colors.grey[600],
         type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.dashboard_outlined), label: 'Dashboard'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Classify'),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
+        items: [
+          const BottomNavigationBarItem(
+              icon: Icon(Icons.dashboard_outlined), label: 'Dashboard'),
+          BottomNavigationBarItem(
+            icon: Stack(clipBehavior: Clip.none, children: [
+              const Icon(Icons.sms_outlined),
+              if (_newSmsCount > 0)
+                Positioned(
+                  right: -6,
+                  top: -4,
+                  child: Container(
+                    padding: const EdgeInsets.all(3),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFDA3633),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      '$_newSmsCount',
+                      style: const TextStyle(color: Colors.white, fontSize: 9),
+                    ),
+                  ),
+                ),
+            ]),
+            label: 'Inbox',
+          ),
+          const BottomNavigationBarItem(
+              icon: Icon(Icons.search), label: 'Classify'),
+          const BottomNavigationBarItem(
+              icon: Icon(Icons.history), label: 'History'),
         ],
       ),
     );
@@ -96,7 +170,7 @@ class _HomeTabState extends State<_HomeTab> {
             onSelected: (v) async {
               if (v == 'logout') {
                 await auth.logout();
-                if (context.mounted) Navigator.pushReplacementNamed(context, '/');
+                if (context.mounted) Navigator.pushReplacementNamed(context, '/auth');
               }
             },
             itemBuilder: (_) => [

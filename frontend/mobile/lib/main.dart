@@ -3,8 +3,11 @@ import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
 import 'screens/auth_screen.dart';
 import 'screens/dashboard_screen.dart';
+import 'services/sms_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SmsService.init();
   runApp(
     ChangeNotifierProvider(
       create: (_) => AuthProvider(),
@@ -30,7 +33,7 @@ class SpamFilterApp extends StatelessWidget {
       ),
       home: const _Root(),
       routes: {
-        '/': (_) => const AuthScreen(),
+        '/auth': (_) => const AuthScreen(),
         '/home': (_) => const DashboardScreen(),
       },
     );
@@ -52,7 +55,7 @@ class _RootState extends State<_Root> {
       final auth = context.read<AuthProvider>();
       await auth.checkAuth();
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, auth.isLoggedIn ? '/home' : '/');
+      Navigator.pushReplacementNamed(context, auth.isLoggedIn ? '/home' : '/auth');
     });
   }
 
