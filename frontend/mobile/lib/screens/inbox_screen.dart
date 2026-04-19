@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../services/sms_service.dart';
+import '../utils/text_utils.dart';
 
 class InboxScreen extends StatefulWidget {
   const InboxScreen({super.key});
@@ -96,7 +97,7 @@ class _InboxScreenState extends State<InboxScreen> {
                           child: ListView.separated(
                             padding: const EdgeInsets.all(12),
                             itemCount: _filtered.length,
-                            separatorBuilder: (context, index) => const SizedBox(height: 8),
+                            separatorBuilder: (_, _) => const SizedBox(height: 8),
                             itemBuilder: (_, i) => _MessageTile(msg: _filtered[i]),
                           ),
                         ),
@@ -126,20 +127,16 @@ class _SummaryBar extends StatelessWidget {
     return Container(
       color: const Color(0xFF161B22),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      child: Column(
-        children: [
-          Row(children: [
-            _Chip(label: 'All $total', value: 'all', active: filter == 'all',
-                color: const Color(0xFF58A6FF), onTap: onFilter),
-            const SizedBox(width: 8),
-            _Chip(label: '⚠️ Spam $spam', value: 'spam', active: filter == 'spam',
-                color: const Color(0xFFDA3633), onTap: onFilter),
-            const SizedBox(width: 8),
-            _Chip(label: '✓ Ham $ham', value: 'ham', active: filter == 'ham',
-                color: const Color(0xFF238636), onTap: onFilter),
-          ]),
-        ],
-      ),
+      child: Row(children: [
+        _Chip(label: 'All $total', value: 'all', active: filter == 'all',
+            color: const Color(0xFF58A6FF), onTap: onFilter),
+        const SizedBox(width: 8),
+        _Chip(label: '⚠️ Spam $spam', value: 'spam', active: filter == 'spam',
+            color: const Color(0xFFDA3633), onTap: onFilter),
+        const SizedBox(width: 8),
+        _Chip(label: '✓ Ham $ham', value: 'ham', active: filter == 'ham',
+            color: const Color(0xFF238636), onTap: onFilter),
+      ]),
     );
   }
 }
@@ -232,6 +229,8 @@ class _MessageTile extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             msg['body'] as String,
+            textDirection: directionOf(msg['body'] as String),
+            textAlign: alignOf(msg['body'] as String),
             style: TextStyle(color: Colors.grey[400], fontSize: 13, height: 1.3),
             maxLines: 3,
             overflow: TextOverflow.ellipsis,

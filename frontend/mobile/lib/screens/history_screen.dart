@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../services/api_service.dart';
+import '../utils/text_utils.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -168,20 +169,30 @@ class _LogTile extends StatelessWidget {
         ),
         title: Text(
           text.length > 70 ? '${text.substring(0, 70)}…' : text,
+          textDirection: directionOf(text),
           style: const TextStyle(color: Colors.white, fontSize: 13),
           maxLines: 2,
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 4),
-          child: Row(children: [
-            Text(
-              isSpam ? 'SPAM' : 'LEGITIMATE',
-              style: TextStyle(
-                  color: color, fontSize: 11, fontWeight: FontWeight.bold),
-            ),
-            Text(' • $pct%', style: TextStyle(color: Colors.grey[600], fontSize: 11)),
-            Text(' • $timeStr', style: TextStyle(color: Colors.grey[600], fontSize: 11)),
-          ]),
+          child: Wrap(
+            spacing: 0,
+            children: [
+              Text(
+                isSpam ? 'SPAM' : 'LEGITIMATE',
+                style: TextStyle(
+                    color: color, fontSize: 11, fontWeight: FontWeight.bold),
+              ),
+              Text(' • $pct%',
+                  style: TextStyle(color: Colors.grey[600], fontSize: 11)),
+              if ((log['language'] as String?) != null)
+                Text(' • ${languageLabel(log['language'] as String)}',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 11)),
+              if (timeStr.isNotEmpty)
+                Text(' • $timeStr',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 11)),
+            ],
+          ),
         ),
         trailing: IconButton(
           icon: const Icon(Icons.flag_outlined, color: Colors.grey, size: 20),

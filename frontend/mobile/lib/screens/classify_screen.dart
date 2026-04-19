@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
+import '../utils/text_utils.dart';
 
 class ClassifyScreen extends StatefulWidget {
   const ClassifyScreen({super.key});
@@ -13,6 +14,7 @@ class _ClassifyScreenState extends State<ClassifyScreen> {
   bool _loading = false;
   Map<String, dynamic>? _result;
   String? _error;
+  TextDirection _inputDir = TextDirection.ltr;
 
   Future<void> _classify() async {
     final text = _ctrl.text.trim();
@@ -74,9 +76,15 @@ class _ClassifyScreenState extends State<ClassifyScreen> {
             TextField(
               controller: _ctrl,
               maxLines: 5,
+              textDirection: _inputDir,
+              textAlign: _inputDir == TextDirection.rtl ? TextAlign.right : TextAlign.start,
+              onChanged: (text) {
+                final dir = directionOf(text);
+                if (dir != _inputDir) setState(() => _inputDir = dir);
+              },
               style: const TextStyle(color: Colors.white, fontSize: 14),
               decoration: InputDecoration(
-                hintText: 'e.g. "Win a free iPhone now! Click here..."',
+                hintText: 'e.g. "Win a free iPhone now!" or "اشترك الآن واربح جائزة"',
                 hintStyle: TextStyle(color: Colors.grey[600]),
                 filled: true,
                 fillColor: const Color(0xFF161B22),
@@ -205,7 +213,7 @@ class _ResultCard extends StatelessWidget {
           Row(children: [
             _Tag(label: modelUsed, icon: Icons.memory),
             const SizedBox(width: 8),
-            _Tag(label: language.toUpperCase(), icon: Icons.language),
+            _Tag(label: languageLabel(language), icon: Icons.language),
           ]),
           const SizedBox(height: 16),
           const Divider(color: Color(0xFF30363D)),

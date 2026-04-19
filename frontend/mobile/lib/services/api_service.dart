@@ -7,7 +7,7 @@ class ApiService {
   // iOS simulator  → localhost
   // Android emulator → 10.0.2.2
   // Real device     → your Mac's LAN IP e.g. 192.168.1.x
-  static const String baseUrl = 'http://localhost:8000';
+  static const String baseUrl = 'http://192.168.100.250:8000';
 
   static const _timeout = Duration(seconds: 10);
 
